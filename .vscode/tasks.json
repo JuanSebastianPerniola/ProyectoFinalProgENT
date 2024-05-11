@@ -1,0 +1,59 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "gradle",
+			"id": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornosapp:javadocapp",
+			"script": "app:javadoc",
+			"description": "Generates Javadoc API documentation for the main source code.",
+			"group": "documentation",
+			"project": "app",
+			"buildFile": "C:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos\\app\\build.gradle",
+			"rootProject": "ProjectFinalProg&Entornos",
+			"projectFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"workspaceFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: app:javadoc"
+		},
+		{
+			"type": "gradle",
+			"id": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornosapp:cleanapp",
+			"script": "app:clean",
+			"description": "Deletes the build directory.",
+			"group": "build",
+			"project": "app",
+			"buildFile": "C:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos\\app\\build.gradle",
+			"rootProject": "ProjectFinalProg&Entornos",
+			"projectFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"workspaceFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: app:clean"
+		},
+		{
+			"type": "gradle",
+			"id": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornosapp:compileJavaapp",
+			"script": "app:compileJava",
+			"description": "Compiles main Java source.",
+			"group": "other",
+			"project": "app",
+			"buildFile": "C:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos\\app\\build.gradle",
+			"rootProject": "ProjectFinalProg&Entornos",
+			"projectFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"workspaceFolder": "c:\\Users\\JuanPrograma\\OneDrive\\Desktop\\ProjectFinalProg&Entornos",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: app:compileJava"
+		}
+	]
+}
