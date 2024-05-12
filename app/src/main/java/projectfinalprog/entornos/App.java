@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 /**
  * This class represents a simple Java application that displays a menu with
  */
@@ -21,10 +22,12 @@ public class App extends JFrame {
      * to interact with a database.
      */
 
-     /**
-      * The panel that contains the menu buttons.
-      */
+    /**
+     * The panel that contains the menu buttons.
+     */
     private JPanel menuPanel;
+
+    JCheckBox qualityCheckBox = new JCheckBox("Sort by Quality");
 
     public App() {
         /**
@@ -186,6 +189,7 @@ public class App extends JFrame {
                 }
             }
         });
+
         JButton button4 = new JButton("Bosses");
         button4.addActionListener(new ActionListener() {
             /**
@@ -207,11 +211,11 @@ public class App extends JFrame {
                     // add floor columns
                     tableModel.addColumn("id");
                     tableModel.addColumn("Name");
-                    tableModel.addColumn("FloorApareance");
+                    tableModel.addColumn("FlooApparence");
                     while (result.next()) {
                         int id = result.getInt("id");
                         String name = result.getString("name");
-                        String floorApareance = result.getString("floorApareance");
+                        String floorApareance = result.getString("FlooApparence");
                         tableModel.addRow(new Object[] { id, name, floorApareance });
                     }
 
@@ -220,6 +224,8 @@ public class App extends JFrame {
                     JScrollPane scrollPane = new JScrollPane(table);
 
                     JOptionPane.showMessageDialog(null, scrollPane);
+
+                    menuPanel.add(qualityCheckBox);
 
                     // Close the database connection
                     result.close();
