@@ -27,7 +27,6 @@ public class App extends JFrame {
      */
     private JPanel menuPanel;
 
-    JCheckBox qualityCheckBox = new JCheckBox("Sort by Quality");
 
     public App() {
         /**
@@ -108,7 +107,7 @@ public class App extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Option 2 clicked!");
+                JOptionPane.showMessageDialog(null, "Floor!");
 
                 try {
                     Connection connection = DriverManager.getConnection(url, "root", "");
@@ -141,30 +140,29 @@ public class App extends JFrame {
             }
         });
 
+
         JButton button3 = new JButton("Items");
         button3.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "Items" button click event.
-             * Displays a table with data retrieved from the "items" table in the database.
-             * 
-             * @param e The ActionEvent object representing the event that occurred.
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Options items selected!");
 
+                JCheckBox checkOrderBox = new JCheckBox("Order by quality"); // Inicializa el JCheckBox
+
+                // add quality checkbox
                 try {
                     Connection connection = DriverManager.getConnection(url, "root", "");
                     java.sql.Statement statement = connection.createStatement();
                     String query = "SELECT * FROM items";
+                    if (checkOrderBox.isSelected()) {
+                        query += " ORDER BY Quality ASC";
+                    }
                     ResultSet result = statement.executeQuery(query);
                     DefaultTableModel tableModel = new DefaultTableModel();
                     // add floor columns
                     tableModel.addColumn("id");
                     tableModel.addColumn("Name");
                     tableModel.addColumn("Quality");
-                    tableModel.addColumn("ChanceToDrop");
-                    tableModel.addColumn("idFloor");
                     while (result.next()) {
                         int id = result.getInt("id");
                         String name = result.getString("name");
@@ -173,12 +171,17 @@ public class App extends JFrame {
                         int idFloor = result.getInt("idFloor");
                         tableModel.addRow(new Object[] { id, name, quality, chanceToDrop, idFloor });
                     }
+                    // Agrega el JCheckBox al contenedor adecuado (por ejemplo, un JPanel)
+                    JPanel panel = new JPanel();
+                    panel.add(checkOrderBox);
 
+                    // Crea la tabla y el scrollPane
                     JTable table = new JTable(tableModel);
-
                     JScrollPane scrollPane = new JScrollPane(table);
+                    panel.add(scrollPane); // Agrega la tabla al panel junto con el JCheckBox
 
-                    JOptionPane.showMessageDialog(null, scrollPane);
+                    // Muestra el panel en un cuadro de diálogo
+                    JOptionPane.showMessageDialog(null, panel);
 
                     // Close the database connection
                     result.close();
@@ -189,7 +192,7 @@ public class App extends JFrame {
                 }
             }
         });
-
+          
         JButton button4 = new JButton("Bosses");
         button4.addActionListener(new ActionListener() {
             /**
@@ -225,7 +228,7 @@ public class App extends JFrame {
 
                     JOptionPane.showMessageDialog(null, scrollPane);
 
-                    menuPanel.add(qualityCheckBox);
+                   
 
                     // Close the database connection
                     result.close();
@@ -271,7 +274,7 @@ public class App extends JFrame {
                         JOptionPane.showMessageDialog(null, "No se pudo insertar el ítem.");
                     }
 
-                    // Cerrar la conexión a la base de datos
+                    // Shut the connection wiht the bf
                     statement.close();
                     connection.close();
                 } catch (SQLException | NumberFormatException ex) {
