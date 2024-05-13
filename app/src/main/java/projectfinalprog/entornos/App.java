@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * This class represents a simple Java application that displays a menu with
+ * This class represents a simple Java application that displays a menu with javafx
  */
 public class App extends JFrame {
     /**
@@ -26,8 +26,11 @@ public class App extends JFrame {
      * The panel that contains the menu buttons.
      */
     private JPanel menuPanel;
+    private DefaultTableModel tableModelItems = new DefaultTableModel();
 
-
+    /**
+     * 
+     */
     public App() {
         /**
          * Constructor for the App class.
@@ -49,7 +52,7 @@ public class App extends JFrame {
              * Displays a table with data retrieved from the "kharacter" table in the
              * database.
              * 
-             * @param e The ActionEvent object representing the event that occurred.
+             * @param button1 The ActionEvent object representing the event that occurred.
              */
             @Override
 
@@ -140,43 +143,92 @@ public class App extends JFrame {
             }
         });
 
-
         JButton button3 = new JButton("Items");
         button3.addActionListener(new ActionListener() {
+            /**
+             * ActionListener implementation for handling the "Items" button click event.
+             * Displays a table with data retrieved from the "items" table in the database.
+             * 
+             * @param e The ActionEvent object representing the event that occurred.
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Options items selected!");
 
-                JCheckBox checkOrderBox = new JCheckBox("Order by quality"); // Inicializa el JCheckBox
+                JCheckBox checkOrderBox = new JCheckBox("Order by quality");
 
-                // add quality checkbox
+                checkOrderBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            if (checkOrderBox.isSelected()) {
+                                String query = "SELECT * FROM items ORDER BY Quality DESC";
+
+                                Connection connection = DriverManager.getConnection(url, "root", "");
+                                java.sql.Statement statement = connection.createStatement();
+                                ResultSet result = statement.executeQuery(query);
+
+                                tableModelItems.setRowCount(0);
+                                while (result.next()) {
+                                    int id = result.getInt("id");
+                                    String name = result.getString("name");
+                                    String quality = result.getString("quality");
+                                    tableModelItems.addRow(new Object[] { id, name, quality });
+                                }
+
+                                result.close();
+                                statement.close();
+                                connection.close();
+                            } else {
+                                String query = "SELECT * FROM items";
+
+                                Connection connection = DriverManager.getConnection(url, "root", "");
+                                java.sql.Statement statement = connection.createStatement();
+                                ResultSet result = statement.executeQuery(query);
+
+                                tableModelItems.setRowCount(0);
+                                while (result.next()) {
+                                    int id = result.getInt("id");
+                                    String name = result.getString("name");
+                                    String quality = result.getString("quality");
+                                    // Añade cada fila ordenada por calidad al modelo de tabla
+                                    tableModelItems.addRow(new Object[] { id, name, quality });
+                                }
+                                result.close();
+                                statement.close();
+                                connection.close();
+                            }
+
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+
                 try {
                     Connection connection = DriverManager.getConnection(url, "root", "");
                     java.sql.Statement statement = connection.createStatement();
                     String query = "SELECT * FROM items";
-                    if (checkOrderBox.isSelected()) {
-                        query += " ORDER BY Quality ASC";
-                    }
+
                     ResultSet result = statement.executeQuery(query);
-                    DefaultTableModel tableModel = new DefaultTableModel();
-                    // add floor columns
-                    tableModel.addColumn("id");
-                    tableModel.addColumn("Name");
-                    tableModel.addColumn("Quality");
+                    tableModelItems.addColumn("id");
+                    tableModelItems.addColumn("Name");
+                    tableModelItems.addColumn("Quality");
                     while (result.next()) {
                         int id = result.getInt("id");
                         String name = result.getString("name");
                         String quality = result.getString("quality");
                         int chanceToDrop = result.getInt("chanceToDrop");
                         int idFloor = result.getInt("idFloor");
-                        tableModel.addRow(new Object[] { id, name, quality, chanceToDrop, idFloor });
+                        tableModelItems.addRow(new Object[] { id, name, quality, chanceToDrop, idFloor });
                     }
+
                     // Agrega el JCheckBox al contenedor adecuado (por ejemplo, un JPanel)
                     JPanel panel = new JPanel();
                     panel.add(checkOrderBox);
 
                     // Crea la tabla y el scrollPane
-                    JTable table = new JTable(tableModel);
+                    JTable table = new JTable(tableModelItems);
                     JScrollPane scrollPane = new JScrollPane(table);
                     panel.add(scrollPane); // Agrega la tabla al panel junto con el JCheckBox
 
@@ -187,12 +239,13 @@ public class App extends JFrame {
                     result.close();
                     statement.close();
                     connection.close();
+
                 } catch (SQLException exs) {
                     exs.printStackTrace();
                 }
             }
         });
-          
+
         JButton button4 = new JButton("Bosses");
         button4.addActionListener(new ActionListener() {
             /**
@@ -227,8 +280,6 @@ public class App extends JFrame {
                     JScrollPane scrollPane = new JScrollPane(table);
 
                     JOptionPane.showMessageDialog(null, scrollPane);
-
-                   
 
                     // Close the database connection
                     result.close();
@@ -277,7 +328,7 @@ public class App extends JFrame {
                     // Shut the connection wiht the bf
                     statement.close();
                     connection.close();
-                } catch (SQLException | NumberFormatException ex) {
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
