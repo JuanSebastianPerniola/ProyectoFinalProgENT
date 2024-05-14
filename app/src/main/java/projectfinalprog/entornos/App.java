@@ -1,340 +1,59 @@
 package projectfinalprog.entornos;
 
-//prog final project
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
- * This class represents a simple Java application that displays a menu with javafx
+ * This class represents a simple Java application that displays a menu with
+ * several options
+ * to interact with a database.
+ * 
+ * <p>
+ * The main purpose of this application is to provide a user-friendly interface
+ * for managing
+ * various aspects of a database, such as characters, floors, items, and bosses.
+ * </p>
+ * 
+ * <p>
+ * The application utilizes Swing for creating the graphical user interface
+ * (GUI) and connects
+ * to a MySQL database using JDBC.
+ * </p>
+ * 
+ * <p>
+ * The developer environments used for this project include Java, MySQL, and an
+ * integrated
+ * development environment (IDE) such as IntelliJ IDEA or Eclipse.
+ * </p>
  */
 public class App extends JFrame {
-    /**
-     * This class represents a simple Java application that displays a menu with
-     * several options
-     * to interact with a database.
-     */
 
-    /**
-     * The panel that contains the menu buttons.
-     */
     private JPanel menuPanel;
-    private DefaultTableModel tableModelItems = new DefaultTableModel();
 
-    /**
-     * 
-     */
     public App() {
-        /**
-         * Constructor for the App class.
-         * Initializes the application and sets up the menu panel.
-         */
-        String url = "jdbc:mysql://localhost:3306/isaacbd";
         setTitle("Java Menu");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
 
         menuPanel = new JPanel();
         menuPanel.setLayout(new GridLayout(3, 1));
-
+        /* First button for k */
         JButton button1 = new JButton("Kharacters");
-        button1.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "Kharacters" button click
-             * event.
-             * Displays a table with data retrieved from the "kharacter" table in the
-             * database.
-             * 
-             * @param button1 The ActionEvent object representing the event that occurred.
-             */
-            @Override
-
-            public void actionPerformed(ActionEvent e) {
-                // Code to execute when Option 1 is clicked
-                JOptionPane.showMessageDialog(null, "Kharacters!");
-
-                // Connect to the database
-                try {
-                    Connection connection = DriverManager.getConnection(url, "root", "");
-                    java.sql.Statement statement = connection.createStatement();
-                    String query = "SELECT * FROM kharacter";
-                    ResultSet resultSet = statement.executeQuery(query);
-
-                    // Create a table model to hold the data
-                    DefaultTableModel tableModel = new DefaultTableModel();
-                    tableModel.addColumn("ID");
-                    tableModel.addColumn("Name");
-                    tableModel.addColumn("ItemStarted");
-
-                    // Populate the table model with the data from the result set
-                    while (resultSet.next()) {
-                        int id = resultSet.getInt("id");
-                        String name = resultSet.getString("name");
-                        String itemStarted = resultSet.getString("itemStarted");
-                        tableModel.addRow(new Object[] { id, name, itemStarted });
-                    }
-
-                    // Create a table to display the data
-                    JTable table = new JTable(tableModel);
-
-                    // Create a scroll pane to hold the table
-                    JScrollPane scrollPane = new JScrollPane(table);
-
-                    // Show the table in a dialog
-                    JOptionPane.showMessageDialog(null, scrollPane);
-
-                    // Close the database connection
-                    resultSet.close();
-                    statement.close();
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
+        button1.addActionListener(new BotonKharacters());
+        /* Second buttton */
         JButton button2 = new JButton("Floor");
-        button2.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "Floor" button click event.
-             * Displays a table with data retrieved from the "floor" table in the database.
-             * 
-             * @param e The ActionEvent object representing the event that occurred.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Floor!");
-
-                try {
-                    Connection connection = DriverManager.getConnection(url, "root", "");
-                    java.sql.Statement statement = connection.createStatement();
-                    String query = "SELECT * FROM floor";
-                    ResultSet result = statement.executeQuery(query);
-                    DefaultTableModel tableModel = new DefaultTableModel();
-                    // add floor columns
-                    tableModel.addColumn("ID");
-                    tableModel.addColumn("TipoFloor");
-                    while (result.next()) {
-                        int id = result.getInt("id");
-                        String tipoFloor = result.getString("tipoFloor");
-                        tableModel.addRow(new Object[] { id, tipoFloor });
-                    }
-
-                    JTable table = new JTable(tableModel);
-
-                    JScrollPane scrollPane = new JScrollPane(table);
-
-                    JOptionPane.showMessageDialog(null, scrollPane);
-
-                    // Close the database connection
-                    result.close();
-                    statement.close();
-                    connection.close();
-                } catch (SQLException exs) {
-                    exs.printStackTrace();
-                }
-            }
-        });
-
+        button2.addActionListener(new BotonFloor());
+        /* Third button for k */
         JButton button3 = new JButton("Items");
-        button3.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "Items" button click event.
-             * Displays a table with data retrieved from the "items" table in the database.
-             * 
-             * @param e The ActionEvent object representing the event that occurred.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Options items selected!");
-
-                JCheckBox checkOrderBox = new JCheckBox("Order by quality");
-
-                checkOrderBox.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            if (checkOrderBox.isSelected()) {
-                                String query = "SELECT * FROM items ORDER BY Quality DESC";
-
-                                Connection connection = DriverManager.getConnection(url, "root", "");
-                                java.sql.Statement statement = connection.createStatement();
-                                ResultSet result = statement.executeQuery(query);
-
-                                tableModelItems.setRowCount(0);
-                                while (result.next()) {
-                                    int id = result.getInt("id");
-                                    String name = result.getString("name");
-                                    String quality = result.getString("quality");
-                                    tableModelItems.addRow(new Object[] { id, name, quality });
-                                }
-
-                                result.close();
-                                statement.close();
-                                connection.close();
-                            } else {
-                                String query = "SELECT * FROM items";
-
-                                Connection connection = DriverManager.getConnection(url, "root", "");
-                                java.sql.Statement statement = connection.createStatement();
-                                ResultSet result = statement.executeQuery(query);
-
-                                tableModelItems.setRowCount(0);
-                                while (result.next()) {
-                                    int id = result.getInt("id");
-                                    String name = result.getString("name");
-                                    String quality = result.getString("quality");
-                                    // Añade cada fila ordenada por calidad al modelo de tabla
-                                    tableModelItems.addRow(new Object[] { id, name, quality });
-                                }
-                                result.close();
-                                statement.close();
-                                connection.close();
-                            }
-
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-
-                try {
-                    Connection connection = DriverManager.getConnection(url, "root", "");
-                    java.sql.Statement statement = connection.createStatement();
-                    String query = "SELECT * FROM items";
-
-                    ResultSet result = statement.executeQuery(query);
-                    tableModelItems.addColumn("id");
-                    tableModelItems.addColumn("Name");
-                    tableModelItems.addColumn("Quality");
-                    while (result.next()) {
-                        int id = result.getInt("id");
-                        String name = result.getString("name");
-                        String quality = result.getString("quality");
-                        int chanceToDrop = result.getInt("chanceToDrop");
-                        int idFloor = result.getInt("idFloor");
-                        tableModelItems.addRow(new Object[] { id, name, quality, chanceToDrop, idFloor });
-                    }
-
-                    // Agrega el JCheckBox al contenedor adecuado (por ejemplo, un JPanel)
-                    JPanel panel = new JPanel();
-                    panel.add(checkOrderBox);
-
-                    // Crea la tabla y el scrollPane
-                    JTable table = new JTable(tableModelItems);
-                    JScrollPane scrollPane = new JScrollPane(table);
-                    panel.add(scrollPane); // Agrega la tabla al panel junto con el JCheckBox
-
-                    // Muestra el panel en un cuadro de diálogo
-                    JOptionPane.showMessageDialog(null, panel);
-
-                    // Close the database connection
-                    result.close();
-                    statement.close();
-                    connection.close();
-
-                } catch (SQLException exs) {
-                    exs.printStackTrace();
-                }
-            }
-        });
-
+        button3.addActionListener(new BotonItem());
+        /* Fourth button for k */
         JButton button4 = new JButton("Bosses");
-        button4.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "Bosses" button click event.
-             * Displays a table with data retrieved from the "bosses" table in the database.
-             * 
-             * @param e The ActionEvent object representing the event that occurred.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Options Bosses selected!");
-
-                try {
-                    Connection connection = DriverManager.getConnection(url, "root", "");
-                    java.sql.Statement statement = connection.createStatement();
-                    String query = "SELECT * FROM bosses";
-                    ResultSet result = statement.executeQuery(query);
-                    DefaultTableModel tableModel = new DefaultTableModel();
-                    // add floor columns
-                    tableModel.addColumn("id");
-                    tableModel.addColumn("Name");
-                    tableModel.addColumn("FlooApparence");
-                    while (result.next()) {
-                        int id = result.getInt("id");
-                        String name = result.getString("name");
-                        String floorApareance = result.getString("FlooApparence");
-                        tableModel.addRow(new Object[] { id, name, floorApareance });
-                    }
-
-                    JTable table = new JTable(tableModel);
-
-                    JScrollPane scrollPane = new JScrollPane(table);
-
-                    JOptionPane.showMessageDialog(null, scrollPane);
-
-                    // Close the database connection
-                    result.close();
-                    statement.close();
-                    connection.close();
-                } catch (SQLException exs) {
-                    exs.printStackTrace();
-                }
-            }
-        });
-
+        button4.addActionListener(new BotonBosses());
+        /* Fifth button for k */
         JButton button5 = new JButton("add item");
-        button5.addActionListener(new ActionListener() {
-            /**
-             * ActionListener implementation for handling the "add item" button click event.
-             * Allows the user to input data for a new item and inserts it into the "items"
-             * table in the database.
-             * 
-             * @param e The ActionEvent object representing the event that occurred.
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Opción seleccionada!");
+        button5.addActionListener(new InserCharacter());
 
-                try {
-                    String name = JOptionPane.showInputDialog("Nombre del ítem:");
-                    String quality = JOptionPane.showInputDialog("Calidad:");
-                    double chanceToDrop = Double.parseDouble(JOptionPane.showInputDialog("Probabilidad de caída:"));
-                    int idFloor = Integer.parseInt(JOptionPane.showInputDialog("ID del piso:"));
-
-                    Connection connection = DriverManager.getConnection(url, "root", "");
-                    PreparedStatement statement = connection.prepareStatement(
-                            "INSERT INTO items (name, quality, chanceToDrop, idFloor) VALUES (?, ?, ?, ?)");
-                    statement.setString(1, name);
-                    statement.setString(2, quality);
-                    statement.setDouble(3, chanceToDrop);
-                    statement.setInt(4, idFloor);
-
-                    int rowsInserted = statement.executeUpdate();
-                    if (rowsInserted > 0) {
-                        JOptionPane.showMessageDialog(null, "Se ha insertado el ítem correctamente.");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "No se pudo insertar el ítem.");
-                    }
-
-                    // Shut the connection wiht the bf
-                    statement.close();
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-        });
-
+        // add existing buttons to the panel
         menuPanel.add(button1);
         menuPanel.add(button2);
         menuPanel.add(button3);
@@ -351,6 +70,9 @@ public class App extends JFrame {
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
+        /**
+         * Create a new instance of the App class to start the application.
+         */
         new App();
     }
 }
